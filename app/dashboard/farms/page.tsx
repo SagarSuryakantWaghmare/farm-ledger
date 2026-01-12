@@ -211,8 +211,8 @@ export default function FarmsPage() {
                                         <Card className="hover:shadow-md transition-all border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden group">
                                             <CardContent className="p-6">
                                                 <div className="flex items-center space-x-4">
-                                                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center transition-colors group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40">
-                                                        <MapPin className="h-7 w-7 text-blue-600" />
+                                                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center transition-colors group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40">
+                                                        <MapPin className="h-7 w-7 text-emerald-600" />
                                                     </div>
                                                     <div className="flex-1">
                                                         <h3 className="font-bold text-lg text-gray-900 dark:text-white">
@@ -223,7 +223,7 @@ export default function FarmsPage() {
                                                         )}
                                                         <div className="flex items-center mt-2 space-x-2">
                                                             {farm.area && (
-                                                                <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-0">
+                                                                <Badge variant="secondary" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300 border-0">
                                                                     {farm.area} {farm.unit || 'Acres'}
                                                                 </Badge>
                                                             )}

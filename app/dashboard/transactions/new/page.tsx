@@ -17,7 +17,7 @@ import { LoaderOne } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'motion/react';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface Worker {
     _id: string;

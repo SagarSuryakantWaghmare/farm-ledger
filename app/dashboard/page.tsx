@@ -142,7 +142,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.4 }}
                     >
                         <Button
-                            className="w-full h-24 bg-white dark:bg-gray-900 border-blue-200 dark:border-blue-800 border-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-400 shadow-sm"
+                            className="w-full h-24 bg-white dark:bg-gray-900 border-zinc-200 dark:border-zinc-800 border-2 hover:bg-zinc-50 dark:hover:bg-zinc-900/20 text-zinc-900 dark:text-zinc-100 shadow-sm"
                             onClick={() => router.push('/dashboard/workers')}
                         >
                             <div className="flex flex-col items-center">

@@ -34,12 +34,12 @@ export function StatsCard({ title, value, type, index }: StatsCardProps) {
                 };
             case 'net':
                 return {
-                    color: 'bg-blue-500',
+                    color: 'bg-zinc-900 dark:bg-zinc-100',
                     icon: Wallet,
-                    bgLight: 'bg-blue-50',
-                    bgDark: 'bg-blue-900/20',
-                    textColor: 'text-blue-500',
-                    borderColor: 'border-blue-100 dark:border-blue-900/10'
+                    bgLight: 'bg-zinc-100 dark:bg-zinc-800',
+                    bgDark: 'bg-zinc-800/50 dark:bg-zinc-700/50',
+                    textColor: 'text-zinc-900 dark:text-zinc-100',
+                    borderColor: 'border-zinc-200 dark:border-zinc-800'
                 };
         }
     };

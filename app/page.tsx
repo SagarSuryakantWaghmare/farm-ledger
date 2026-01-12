@@ -235,9 +235,9 @@ export default function LandingPage() {
                 icon: FileText,
                 title: 'Transaction Tracking',
                 description: 'Record every financial movement. Complete transparency for both credit and debit operations.',
-                iconBg: 'bg-blue-50 dark:bg-blue-900/10',
-                iconColor: 'text-blue-600',
-                borderColor: 'border-blue-100 dark:border-blue-900/10'
+                iconBg: 'bg-indigo-50 dark:bg-indigo-900/10',
+                iconColor: 'text-indigo-600',
+                borderColor: 'border-indigo-100 dark:border-indigo-900/10'
               },
               {
                 icon: ImageIcon,

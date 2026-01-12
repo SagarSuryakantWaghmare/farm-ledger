@@ -17,7 +17,7 @@ import { Plus, Filter, X, Receipt, Image as ImageIcon } from 'lucide-react';
 import { LoaderTwo } from '@/components/ui/loader';
 import Image from 'next/image';
 import axios from 'axios';
-import toast from 'react-hot-toast';
+import { toast } from 'sonner';
 
 interface Transaction {
     _id: string;
@@ -171,10 +171,10 @@ export default function TransactionsPage() {
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="border-2 border-blue-100 dark:border-blue-900/20 shadow-sm bg-white dark:bg-gray-900 rounded-2xl">
+                    <Card className="border-2 border-zinc-200 dark:border-zinc-800 shadow-sm bg-white dark:bg-gray-900 rounded-2xl">
                         <CardContent className="p-6">
                             <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Net Balance</p>
-                            <p className="text-3xl font-extrabold text-blue-500">
+                            <p className="text-3xl font-extrabold text-zinc-900 dark:text-zinc-100">
                                 ₹{summary.netBalance.toLocaleString('en-IN')}
                             </p>
                         </CardContent>

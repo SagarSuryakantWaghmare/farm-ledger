@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
-import { LanguageProvider } from "@/lib/i18n";
-import { AuthProvider } from "@/lib/auth-context";
-import { Toaster } from "react-hot-toast";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -24,16 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.variable} antialiased font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <LanguageProvider>
-            <AuthProvider>
-              {children}
-              <Toaster position="top-right" />
-            </AuthProvider>
-          </LanguageProvider>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
 }
-
