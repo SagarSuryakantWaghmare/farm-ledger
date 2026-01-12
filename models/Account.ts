@@ -16,9 +16,8 @@ const AccountSchema = new mongoose.Schema({
     },
 });
 
-AccountSchema.pre('save', function (next) {
+AccountSchema.pre('save', async function () {
     this.updatedAt = new Date();
-    next();
 });
 
 export default mongoose.models.Account || mongoose.model('Account', AccountSchema);

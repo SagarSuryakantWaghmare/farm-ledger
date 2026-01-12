@@ -32,9 +32,8 @@ const FarmSchema = new mongoose.Schema({
     },
 });
 
-FarmSchema.pre('save', function (next) {
+FarmSchema.pre('save', async function () {
     this.updatedAt = new Date();
-    next();
 });
 
 export default mongoose.models.Farm || mongoose.model('Farm', FarmSchema);

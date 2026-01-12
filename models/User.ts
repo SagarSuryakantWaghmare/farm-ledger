@@ -49,12 +49,11 @@ const UserSchema = new mongoose.Schema({
     },
 });
 
-UserSchema.pre('save', async function (next) {
+UserSchema.pre('save', async function () {
     if (this.isModified('pin')) {
         this.pin = await bcrypt.hash(this.pin, 10);
     }
     this.updatedAt = new Date();
-    next();
 });
 
 UserSchema.methods.comparePin = async function (candidatePin: string) {

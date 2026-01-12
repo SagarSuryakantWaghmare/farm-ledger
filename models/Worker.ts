@@ -29,9 +29,8 @@ const WorkerSchema = new mongoose.Schema({
     },
 });
 
-WorkerSchema.pre('save', function (next) {
+WorkerSchema.pre('save', async function () {
     this.updatedAt = new Date();
-    next();
 });
 
 export default mongoose.models.Worker || mongoose.model('Worker', WorkerSchema);

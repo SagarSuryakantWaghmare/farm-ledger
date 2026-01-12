@@ -54,9 +54,8 @@ const TransactionSchema = new mongoose.Schema({
     },
 });
 
-TransactionSchema.pre('save', function (next) {
+TransactionSchema.pre('save', async function () {
     this.updatedAt = new Date();
-    next();
 });
 
 TransactionSchema.index({ accountId: 1, date: -1 });
