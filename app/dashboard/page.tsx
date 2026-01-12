@@ -5,6 +5,7 @@ import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/layout/Navbar';
+import { Footer } from '@/components/layout/Footer';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -80,10 +81,10 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="container mx-auto px-4 py-8 flex-1">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -225,8 +226,8 @@ export default function DashboardPage() {
                                         >
                                             <div className="flex items-center space-x-4">
                                                 <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.type === 'DEBIT'
-                                                        ? 'bg-red-100 dark:bg-red-900/20 text-red-600'
-                                                        : 'bg-green-100 dark:bg-green-900/20 text-green-600'
+                                                    ? 'bg-red-100 dark:bg-red-900/20 text-red-600'
+                                                    : 'bg-green-100 dark:bg-green-900/20 text-green-600'
                                                     }`}>
                                                     {txn.type === 'DEBIT' ? '↓' : '↑'}
                                                 </div>
@@ -251,6 +252,9 @@ export default function DashboardPage() {
                     </Card>
                 </motion.div>
             </div>
+
+            <Footer />
         </div>
     );
 }
+
