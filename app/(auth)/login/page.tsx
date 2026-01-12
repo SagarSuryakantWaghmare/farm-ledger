@@ -23,7 +23,7 @@ export default function LoginPage() {
         setIsLoading(true);
         try {
             await login(emailOrPhone, pin);
-        } catch (error) {
+        } catch {
         } finally {
             setIsLoading(false);
         }

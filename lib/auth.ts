@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 
@@ -12,7 +12,7 @@ export const generateToken = (userId: string) => {
 export const verifyToken = (token: string) => {
     try {
         return jwt.verify(token, JWT_SECRET);
-    } catch (error) {
+    } catch {
         return null;
     }
 };
@@ -39,7 +39,7 @@ export const authenticateUser = async (req: NextRequest) => {
         }
 
         return { user, accountId: user.accountId };
-    } catch (error) {
+    } catch {
         return { error: 'Authentication failed', status: 500 };
     }
 };

@@ -36,10 +36,7 @@ interface Worker {
     name: string;
 }
 
-interface Farm {
-    _id: string;
-    name: string;
-}
+
 
 export default function TransactionsPage() {
     const { token } = useAuth();
@@ -65,7 +62,7 @@ export default function TransactionsPage() {
         count: 0,
     });
 
-    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
 
     const fetchTransactions = useCallback(async () => {
         try {

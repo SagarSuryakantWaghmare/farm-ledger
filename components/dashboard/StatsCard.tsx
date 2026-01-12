@@ -44,7 +44,7 @@ export function StatsCard({ title, value, type, index }: StatsCardProps) {
         }
     };
 
-    const { color, icon: Icon, bgLight, bgDark, textColor, borderColor } = getStyles();
+    const { icon: Icon, bgLight, bgDark, textColor, borderColor } = getStyles();
 
     return (
         <motion.div

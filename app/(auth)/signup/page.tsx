@@ -49,7 +49,7 @@ export default function SignupPage() {
                 pin: formData.pin,
                 accountName: formData.accountName || `${formData.name}'s Farm`,
             });
-        } catch (error) {
+        } catch {
         } finally {
             setIsLoading(false);
         }

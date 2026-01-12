@@ -9,7 +9,7 @@ cloudinary.config({
 export interface CloudinaryResult {
     secure_url: string;
     public_id: string;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export const uploadImage = async (file: File): Promise<CloudinaryResult> => {
