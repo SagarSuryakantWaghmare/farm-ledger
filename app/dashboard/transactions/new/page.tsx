@@ -15,7 +15,7 @@ import { ArrowLeft, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 import { LoaderOne } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -167,8 +167,8 @@ export default function AddTransactionPage() {
 
             await axios.post('/api/transactions', {
                 type: formData.type,
-                workerId: formData.workerId,
-                farmId: formData.farmId || undefined,
+                workerId: formData.workerId === 'none' ? undefined : formData.workerId,
+                farmId: formData.farmId === 'none' ? undefined : formData.farmId,
                 amount: Number(formData.amount),
                 description: formData.description.trim(),
                 date: formData.date,
@@ -284,7 +284,7 @@ export default function AddTransactionPage() {
                                                 <SelectValue placeholder="Select farm (optional)" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="">None</SelectItem>
+                                                <SelectItem value="none">None</SelectItem>
                                                 {farms.map(f => (
                                                     <SelectItem key={f._id} value={f._id}>{f.name}</SelectItem>
                                                 ))}

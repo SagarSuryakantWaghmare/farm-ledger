@@ -10,7 +10,7 @@ import { StatsCard } from '@/components/dashboard/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Receipt, Users, MapPin } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 

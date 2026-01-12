@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Plus, MapPin } from 'lucide-react';
 import { LoaderTwo } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';

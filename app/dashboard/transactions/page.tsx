@@ -67,11 +67,11 @@ export default function TransactionsPage() {
     const fetchTransactions = useCallback(async () => {
         try {
             const params = new URLSearchParams();
-            if (filters.workerId) params.append('workerId', filters.workerId);
+            if (filters.workerId && filters.workerId !== 'all') params.append('workerId', filters.workerId);
             if (filters.startDate) params.append('startDate', filters.startDate);
             if (filters.endDate) params.append('endDate', filters.endDate);
-            if (filters.hasBill) params.append('hasBill', filters.hasBill);
-            if (filters.type) params.append('type', filters.type);
+            if (filters.hasBill && filters.hasBill !== 'all') params.append('hasBill', filters.hasBill);
+            if (filters.type && filters.type !== 'all') params.append('type', filters.type);
 
             const response = await axios.get(`/api/transactions?${params.toString()}`, {
                 headers: { Authorization: `Bearer ${token}` },
@@ -129,7 +129,7 @@ export default function TransactionsPage() {
         });
     };
 
-    const hasActiveFilters = Object.values(filters).some(v => v !== '');
+    const hasActiveFilters = Object.values(filters).some(v => v !== '' && v !== 'all');
 
     return (
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
@@ -213,7 +213,7 @@ export default function TransactionsPage() {
                                         <SelectValue placeholder="All Workers" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">All Workers</SelectItem>
+                                        <SelectItem value="all">All Workers</SelectItem>
                                         {workers.map(w => (
                                             <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
                                         ))}
@@ -228,7 +228,7 @@ export default function TransactionsPage() {
                                         <SelectValue placeholder="All Types" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">All Types</SelectItem>
+                                        <SelectItem value="all">All Types</SelectItem>
                                         <SelectItem value="DEBIT">DEBIT</SelectItem>
                                         <SelectItem value="CREDIT">CREDIT</SelectItem>
                                     </SelectContent>
@@ -242,7 +242,7 @@ export default function TransactionsPage() {
                                         <SelectValue placeholder="All" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        <SelectItem value="">All</SelectItem>
+                                        <SelectItem value="all">All</SelectItem>
                                         <SelectItem value="true">With Bill</SelectItem>
                                         <SelectItem value="false">Without Bill</SelectItem>
                                     </SelectContent>

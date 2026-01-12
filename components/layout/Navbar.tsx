@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from 'motion/react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useTheme } from 'next-themes';
