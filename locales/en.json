@@ -1,0 +1,90 @@
+{
+  "common": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "close": "Close",
+    "confirm": "Confirm",
+    "search": "Search",
+    "filter": "Filter",
+    "reset": "Reset",
+    "loading": "Loading..."
+  },
+  "auth": {
+    "emailOrPhone": "Email or Phone",
+    "pin": "4-Digit PIN",
+    "enterPin": "Enter your 4-digit PIN",
+    "name": "Full Name",
+    "email": "Email Address",
+    "phone": "Phone Number",
+    "accountName": "Farm Account Name",
+    "loginTitle": "Welcome Back",
+    "signupTitle": "Create Account",
+    "noAccount": "Don't have an account?",
+    "haveAccount": "Already have an account?"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "overview": "Overview",
+    "recentTransactions": "Recent Transactions",
+    "totalDebit": "Total Debit",
+    "totalCredit": "Total Credit",
+    "netBalance": "Net Balance"
+  },
+  "transactions": {
+    "title": "Transactions",
+    "addNew": "Add Transaction",
+    "type": "Type",
+    "debit": "Debit",
+    "credit": "Credit",
+    "amount": "Amount",
+    "description": "Description",
+    "worker": "Worker",
+    "farm": "Farm",
+    "date": "Date",
+    "billImage": "Bill Image",
+    "uploadBill": "Upload Bill (Optional)",
+    "viewBill": "View Bill",
+    "withBill": "With Bill",
+    "withoutBill": "Without Bill",
+    "filterByWorker": "Filter by Worker",
+    "filterByDate": "Filter by Date",
+    "filterByBill": "Filter by Bill",
+    "startDate": "Start Date",
+    "endDate": "End Date",
+    "eraseData": "Erase Financial Data",
+    "eraseAll": "Erase All",
+    "eraseDebit": "Erase Debit Only",
+    "eraseCredit": "Erase Credit Only",
+    "confirmErase": "Are you sure you want to erase this data? This action cannot be undone."
+  },
+  "workers": {
+    "title": "Workers",
+    "addWorker": "Add Worker",
+    "name": "Worker Name",
+    "phone": "Phone Number",
+    "noWorkers": "No workers found"
+  },
+  "farms": {
+    "title": "Farms",
+    "addFarm": "Add Farm",
+    "name": "Farm Name",
+    "location": "Location",
+    "area": "Area",
+    "noFarms": "No farms found"
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "theme": "Theme",
+    "lightMode": "Light Mode",
+    "darkMode": "Dark Mode",
+    "profile": "Profile"
+  }
+}
