@@ -42,12 +42,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const initializeAuth = async () => {
-            const savedToken = localStorage.getItem('farmledger_token');
-            const savedUser = localStorage.getItem('farmledger_user');
+            if (typeof window !== 'undefined') {
+                const savedToken = localStorage.getItem('farmledger_token');
+                const savedUser = localStorage.getItem('farmledger_user');
 
-            if (savedToken && savedUser) {
-                setToken(savedToken);
-                setUser(JSON.parse(savedUser));
+                if (savedToken && savedUser) {
+                    setToken(savedToken);
+                    setUser(JSON.parse(savedUser));
+                }
             }
             setIsLoading(false);
         };
@@ -82,8 +84,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             const response = await axios.post('/api/auth/signup', data);
             const { token: newToken, user: newUser } = response.data;
 
-            localStorage.setItem('farmledger_token', newToken);
-            localStorage.setItem('farmledger_user', JSON.stringify(newUser));
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('farmledger_token', newToken);
+                localStorage.setItem('farmledger_user', JSON.stringify(newUser));
+            }
 
             setToken(newToken);
             setUser(newUser);
@@ -101,8 +105,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = () => {
-        localStorage.removeItem('farmledger_token');
-        localStorage.removeItem('farmledger_user');
+        if (typeof window !== 'undefined') {
+            localStorage.removeItem('farmledger_token');
+            localStorage.removeItem('farmledger_user');
+        }
         setToken(null);
         setUser(null);
         toast.success('Logged out successfully');

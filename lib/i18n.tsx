@@ -23,9 +23,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const initializeLanguage = async () => {
-            const saved = localStorage.getItem('language') as Language;
-            if (saved && (saved === 'en' || saved === 'mr')) {
-                setLanguageState(saved);
+            if (typeof window !== 'undefined') {
+                const saved = localStorage.getItem('language') as Language;
+                if (saved && (saved === 'en' || saved === 'mr')) {
+                    setLanguageState(saved);
+                }
             }
         };
         initializeLanguage();
@@ -33,7 +35,9 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
     const setLanguage = (lang: Language) => {
         setLanguageState(lang);
-        localStorage.setItem('language', lang);
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('language', lang);
+        }
     };
 
     const t = translations[language];
