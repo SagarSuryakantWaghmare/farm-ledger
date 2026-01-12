@@ -1,0 +1,90 @@
+{
+  "common": {
+    "login": "लॉगिन",
+    "signup": "नोंदणी करा",
+    "logout": "लॉगआउट",
+    "submit": "सबमिट करा",
+    "cancel": "रद्द करा",
+    "save": "जतन करा",
+    "delete": "हटवा",
+    "edit": "संपादित करा",
+    "add": "जोडा",
+    "close": "बंद करा",
+    "confirm": "पुष्टी करा",
+    "search": "शोधा",
+    "filter": "फिल्टर",
+    "reset": "रीसेट करा",
+    "loading": "लोड होत आहे..."
+  },
+  "auth": {
+    "emailOrPhone": "ईमेल किंवा फोन",
+    "pin": "४-अंकी पिन",
+    "enterPin": "तुमचा ४-अंकी पिन टाका",
+    "name": "पूर्ण नाव",
+    "email": "ईमेल पत्ता",
+    "phone": "फोन नंबर",
+    "accountName": "शेत खाते नाव",
+    "loginTitle": "पुन्हा स्वागत",
+    "signupTitle": "खाते तयार करा",
+    "noAccount": "खाते नाही?",
+    "haveAccount": "आधीच खाते आहे?"
+  },
+  "dashboard": {
+    "title": "डॅशबोर्ड",
+    "overview": "सारांश",
+    "recentTransactions": "अलीकडील व्यवहार",
+    "totalDebit": "एकूण खर्च",
+    "totalCredit": "एकूण जमा",
+    "netBalance": "निव्वळ शिल्लक"
+  },
+  "transactions": {
+    "title": "व्यवहार",
+    "addNew": "नवीन व्यवहार जोडा",
+    "type": "प्रकार",
+    "debit": "खर्च",
+    "credit": "जमा",
+    "amount": "रक्कम",
+    "description": "वर्णन",
+    "worker": "कामगार",
+    "farm": "शेत",
+    "date": "तारीख",
+    "billImage": "बिल फोटो",
+    "uploadBill": "बिल अपलोड करा (ऐच्छिक)",
+    "viewBill": "बिल पहा",
+    "withBill": "बिलासह",
+    "withoutBill": "बिलाशिवाय",
+    "filterByWorker": "कामगारानुसार फिल्टर करा",
+    "filterByDate": "तारखेनुसार फिल्टर करा",
+    "filterByBill": "बिलानुसार फिल्टर करा",
+    "startDate": "सुरुवातीची तारीख",
+    "endDate": "शेवटची तारीख",
+    "eraseData": "आर्थिक डेटा हटवा",
+    "eraseAll": "सर्व हटवा",
+    "eraseDebit": "फक्त खर्च हटवा",
+    "eraseCredit": "फक्त जमा हटवा",
+    "confirmErase": "तुम्हाला खात्री आहे का? हा डेटा परत मिळणार नाही."
+  },
+  "workers": {
+    "title": "कामगार",
+    "addWorker": "कामगार जोडा",
+    "name": "कामगाराचे नाव",
+    "phone": "फोन नंबर",
+    "noWorkers": "कामगार सापडले नाहीत"
+  },
+  "farms": {
+    "title": "शेते",
+    "addFarm": "शेत जोडा",
+    "name": "शेताचे नाव",
+    "location": "स्थान",
+    "area": "क्षेत्रफळ",
+    "noFarms": "शेते सापडली नाहीत"
+  },
+  "settings": {
+    "title": "सेटिंग्ज",
+    "language": "भाषा",
+    "theme": "थीम",
+    "lightMode": "लाईट मोड",
+    "darkMode": "डार्क मोड",
+    "profile": "प्रोफाइल"
+  }
+}
