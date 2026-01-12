@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Sprout, UserPlus, Loader2 } from 'lucide-react';
+import { Sprout, UserPlus } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
+import { StatefulButton } from '@/components/ui/stateful-button';
 
 export default function SignupPage() {
     const { signup } = useAuth();
@@ -111,7 +113,7 @@ export default function SignupPage() {
                                 <Input
                                     id="name"
                                     type="text"
-                                    placeholder="Sagar Patil"
+                                    placeholder="Sourabh Patil"
                                     value={formData.name}
                                     onChange={(e) => handleChange('name', e.target.value)}
                                     required
@@ -124,7 +126,7 @@ export default function SignupPage() {
                                 <Input
                                     id="email"
                                     type="email"
-                                    placeholder="sagar@farm.com"
+                                    placeholder="sourabh@farm.com"
                                     value={formData.email}
                                     onChange={(e) => handleChange('email', e.target.value)}
                                     required
@@ -188,23 +190,13 @@ export default function SignupPage() {
                                 {pinError && <p className="text-xs text-red-500">{pinError}</p>}
                             </div>
 
-                            <Button
+                            <StatefulButton
                                 type="submit"
-                                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
+                                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 hover:ring-emerald-500 rounded-xl"
                                 disabled={isLoading}
                             >
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Creating Account...
-                                    </>
-                                ) : (
-                                    <>
-                                        <UserPlus className="mr-2 h-4 w-4" />
-                                        {t.common.signup}
-                                    </>
-                                )}
-                            </Button>
+                                {t.common.signup}
+                            </StatefulButton>
 
                             <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                                 {t.auth.haveAccount}{' '}

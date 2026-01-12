@@ -17,8 +17,11 @@ import {
   Zap,
   ArrowRight,
   CheckCircle2,
+  Menu,
+  X
 } from 'lucide-react';
 import { LoaderFive } from '@/components/ui/loader';
+import { Navbar as ResizableNav, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavToggle, MobileNavMenu } from '@/components/ui/resizable-navbar';
 
 import { HeroParallax } from '@/components/ui/hero-parallax';
 
@@ -104,6 +107,7 @@ export default function LandingPage() {
   const router = useRouter();
   const { token, isLoading } = useAuth();
   const [mounted, setMounted] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -126,26 +130,52 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-950 overflow-x-hidden">
-      <nav className="fixed top-0 z-[60] w-full border-b bg-white/80 backdrop-blur-lg dark:bg-gray-950/80">
-        <div className="max-w-7xl mx-auto w-full px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-600 text-white shadow-lg shadow-emerald-200 dark:shadow-none">
-              <Sprout size={24} />
-            </div>
-            <span className="text-xl font-bold text-gray-900 dark:text-white tracking-tight">
-              FarmLedger
-            </span>
-          </div>
+      <ResizableNav className="top-4">
+        <NavBody>
+          <NavbarLogo />
+          <NavItems
+            items={[
+              { name: "Home", link: "/" },
+              { name: "Dashboard", link: "/dashboard" },
+              { name: "Workers", link: "/dashboard/workers" },
+              { name: "Farms", link: "/dashboard/farms" },
+            ]}
+          />
           <div className="flex items-center gap-4">
-            <Button variant="ghost" onClick={() => router.push('/login')} className="font-semibold">
+            <NavbarButton variant="secondary" onClick={() => router.push('/login')}>
               Login
-            </Button>
-            <Button className="bg-emerald-600 hover:bg-emerald-700 font-bold shadow-md shadow-emerald-100" onClick={() => router.push('/signup')}>
-              Get Started
-            </Button>
+            </NavbarButton>
+            <NavbarButton className="bg-emerald-600 dark:bg-emerald-600 text-white hover:bg-emerald-700" onClick={() => router.push('/signup')}>
+              Sign Up
+            </NavbarButton>
           </div>
-        </div>
-      </nav>
+        </NavBody>
+
+        <MobileNav>
+          <MobileNavHeader>
+            <NavbarLogo />
+            <MobileNavToggle
+              isOpen={isMobileMenuOpen}
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            />
+          </MobileNavHeader>
+          <MobileNavMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)}>
+            <div className="flex flex-col gap-4 w-full">
+              <a href="/" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Home</a>
+              <a href="/dashboard" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Dashboard</a>
+              <a href="/dashboard/workers" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Workers</a>
+              <a href="/dashboard/farms" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Farms</a>
+              <hr className="my-2" />
+              <Button variant="ghost" className="w-full justify-start text-lg h-12 rounded-xl" onClick={() => router.push('/login')}>
+                Login
+              </Button>
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-lg h-12 rounded-xl" onClick={() => router.push('/signup')}>
+                Get Started
+              </Button>
+            </div>
+          </MobileNavMenu>
+        </MobileNav>
+      </ResizableNav>
 
       <section className="relative w-full">
         <HeroParallax products={products} />
@@ -169,6 +199,127 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="py-24 bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900">
+        <div className="max-w-7xl mx-auto w-full px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white mb-6">
+              Everything You Need
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+              Powerful features to manage your farm expenses efficiently
+            </p>
+          </motion.div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {[
+              {
+                icon: Users,
+                title: 'Worker Management',
+                description: 'Maintain detailed records of your entire workforce. Track attendance and manage profiles with ease.',
+                iconBg: 'bg-emerald-50 dark:bg-emerald-900/10',
+                iconColor: 'text-emerald-600',
+                borderColor: 'border-emerald-100 dark:border-emerald-900/10'
+              },
+              {
+                icon: FileText,
+                title: 'Transaction Tracking',
+                description: 'Record every financial movement. Complete transparency for both credit and debit operations.',
+                iconBg: 'bg-blue-50 dark:bg-blue-900/10',
+                iconColor: 'text-blue-600',
+                borderColor: 'border-blue-100 dark:border-blue-900/10'
+              },
+              {
+                icon: ImageIcon,
+                title: 'Bill Management',
+                description: 'Go paperless. Securely upload and store digital copies of all your farm bills and receipts.',
+                iconBg: 'bg-purple-50 dark:bg-purple-900/10',
+                iconColor: 'text-purple-600',
+                borderColor: 'border-purple-100 dark:border-purple-900/10'
+              },
+              {
+                icon: Shield,
+                title: 'Secure & Private',
+                description: 'Your data is protected with 4-digit PIN authentication and industry-standard encryption.',
+                iconBg: 'bg-red-50 dark:bg-red-900/10',
+                iconColor: 'text-red-600',
+                borderColor: 'border-red-100 dark:border-red-900/10'
+              },
+              {
+                icon: Globe,
+                title: 'Bilingual Support',
+                description: 'Breaking language barriers. Use the platform seamlessly in either English or Marathi.',
+                iconBg: 'bg-amber-50 dark:bg-amber-900/10',
+                iconColor: 'text-amber-600',
+                borderColor: 'border-amber-100 dark:border-amber-900/10'
+              },
+              {
+                icon: Zap,
+                title: 'Real-time Sync',
+                description: 'Multi-device support with instant updates. Keep all owners in sync without any delay.',
+                iconBg: 'bg-cyan-50 dark:bg-cyan-900/10',
+                iconColor: 'text-cyan-600',
+                borderColor: 'border-cyan-100 dark:border-cyan-900/10'
+              }
+            ].map((feature, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.1 }}
+              >
+                <Card className={`h-full hover:shadow-2xl transition-all duration-300 border-2 ${feature.borderColor} rounded-[2.5rem] overflow-hidden group bg-white dark:bg-gray-900`}>
+                  <CardContent className="p-10">
+                    <div className={`w-16 h-16 rounded-3xl ${feature.iconBg} flex items-center justify-center mb-8 transition-transform group-hover:scale-110 group-hover:rotate-3 duration-300`}>
+                      <feature.icon className={`h-8 w-8 ${feature.iconColor}`} />
+                    </div>
+                    <h3 className="text-2xl font-black text-gray-900 dark:text-white mb-4 tracking-tight">
+                      {feature.title}
+                    </h3>
+                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed font-bold text-lg">
+                      {feature.description}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      <section className="py-24 bg-emerald-600 dark:bg-emerald-700 text-white overflow-hidden relative">
+        <div className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 translate-y-1/2 -translate-x-1/2 w-96 h-96 bg-white opacity-5 rounded-full blur-3xl" />
+
+        <div className="max-w-7xl mx-auto w-full px-4 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="text-4xl md:text-6xl font-extrabold mb-8 tracking-tight">
+              Ready to Get Started?
+            </h2>
+            <p className="text-xl mb-12 text-emerald-50 max-w-2xl mx-auto font-medium">
+              Join thousands of farmers who are already managing their expenses efficiently with FarmLedger.
+            </p>
+            <Button
+              size="lg"
+              className="bg-white text-emerald-600 hover:bg-gray-100 h-16 px-10 text-xl font-bold rounded-2xl shadow-xl transition-all hover:scale-105 active:scale-95 border-0"
+              onClick={() => router.push('/signup')}
+            >
+              Create Free Account
+              <ArrowRight className="ml-2 h-6 w-6" />
+            </Button>
+          </motion.div>
+        </div>
+      </section>
 
       <footer className="bg-gray-950 text-gray-400 py-20 border-t border-gray-900">
         <div className="max-w-7xl mx-auto w-full px-4">
@@ -181,12 +332,6 @@ export default function LandingPage() {
             </div>
 
             <p className="text-sm font-bold tracking-tight">© 2026 FarmLedger. All rights reserved.</p>
-
-            <div className="flex gap-8">
-              <a href="#" className="hover:text-white transition-colors"><Shield className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Globe className="h-5 w-5" /></a>
-              <a href="#" className="hover:text-white transition-colors"><Zap className="h-5 w-5" /></a>
-            </div>
           </div>
         </div>
       </footer>

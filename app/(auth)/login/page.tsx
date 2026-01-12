@@ -9,7 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Sprout, LogIn, Loader2 } from 'lucide-react';
+import { Sprout, LogIn } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
+import { StatefulButton } from '@/components/ui/stateful-button';
 
 export default function LoginPage() {
     const { login } = useAuth();
@@ -102,23 +104,13 @@ export default function LoginPage() {
                                 <p className="text-xs text-gray-500">{t.auth.enterPin}</p>
                             </div>
 
-                            <Button
+                            <StatefulButton
                                 type="submit"
-                                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700"
+                                className="w-full h-11 bg-emerald-600 hover:bg-emerald-700 hover:ring-emerald-500 rounded-xl"
                                 disabled={isLoading}
                             >
-                                {isLoading ? (
-                                    <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Loading...
-                                    </>
-                                ) : (
-                                    <>
-                                        <LogIn className="mr-2 h-4 w-4" />
-                                        {t.common.login}
-                                    </>
-                                )}
-                            </Button>
+                                {t.common.login}
+                            </StatefulButton>
 
                             <div className="text-center text-sm text-gray-600 dark:text-gray-400">
                                 {t.auth.noAccount}{' '}

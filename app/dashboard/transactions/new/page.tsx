@@ -11,7 +11,9 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Upload, X, Loader2, Check } from 'lucide-react';
+import { ArrowLeft, Upload, X, Check } from 'lucide-react';
+import { LoaderOne } from '@/components/ui/loader';
+import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -28,7 +30,7 @@ interface Farm {
 
 export default function AddTransactionPage() {
     const { token } = useAuth();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const router = useRouter();
 
     const [workers, setWorkers] = useState<Worker[]>([]);
@@ -323,14 +325,25 @@ export default function AddTransactionPage() {
                                                     className="hidden"
                                                     id="bill-upload"
                                                 />
-                                                <label htmlFor="bill-upload" className="cursor-pointer">
-                                                    <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                                                        Click to upload bill image
-                                                    </p>
-                                                    <p className="text-xs text-gray-500 mt-2">
-                                                        JPG, PNG or WEBP (max 5MB)
-                                                    </p>
+                                                <label htmlFor="bill-upload" className="cursor-pointer w-full h-full flex flex-col items-center justify-center p-8">
+                                                    {isUploading ? (
+                                                        <div className="flex flex-col items-center">
+                                                            <LoaderOne />
+                                                            <p className="mt-4 text-sm font-medium text-gray-500">
+                                                                {language === 'en' ? 'Uploading bill...' : 'बिल अपलोड होत आहे...'}
+                                                            </p>
+                                                        </div>
+                                                    ) : (
+                                                        <>
+                                                            <Upload className="h-12 w-12 text-gray-400 mb-4" />
+                                                            <p className="text-sm font-bold text-gray-600 dark:text-gray-400">
+                                                                {language === 'en' ? 'Click to upload bill image' : 'बिल फोटो अपलोड करण्यासाठी क्लिक करा'}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500 mt-2">
+                                                                JPG, PNG or WEBP (max 5MB)
+                                                            </p>
+                                                        </>
+                                                    )}
                                                 </label>
                                             </div>
                                         ) : (
@@ -355,23 +368,13 @@ export default function AddTransactionPage() {
                                 )}
 
                                 <div className="flex gap-4">
-                                    <Button
+                                    <StatefulButton
                                         type="submit"
-                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700 hover:ring-emerald-500 rounded-xl h-11"
                                         disabled={isSubmitting || isUploading}
                                     >
-                                        {isSubmitting || isUploading ? (
-                                            <>
-                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                {isUploading ? 'Uploading...' : 'Saving...'}
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Check className="mr-2 h-4 w-4" />
-                                                {t.common.save}
-                                            </>
-                                        )}
-                                    </Button>
+                                        {t.common.save}
+                                    </StatefulButton>
                                     <Button
                                         type="button"
                                         variant="outline"

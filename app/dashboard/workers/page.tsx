@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users } from 'lucide-react';
 import { LoaderOne, LoaderTwo } from '@/components/ui/loader';
+import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -137,14 +138,13 @@ export default function WorkersPage() {
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <Button type="submit" disabled={isAdding}>
-                                            {isAdding ? <LoaderOne /> : (
-                                                <>
-                                                    <Plus className="mr-2 h-4 w-4" />
-                                                    {t.common.add}
-                                                </>
-                                            )}
-                                        </Button>
+                                        <StatefulButton
+                                            type="submit"
+                                            className="bg-emerald-600 hover:bg-emerald-700 hover:ring-emerald-500 w-32"
+                                            disabled={isAdding}
+                                        >
+                                            {t.common.add}
+                                        </StatefulButton>
                                         <Button
                                             type="button"
                                             variant="outline"
