@@ -1,0 +1,391 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/lib/auth-context';
+import { useLanguage } from '@/lib/i18n';
+import { useRouter } from 'next/navigation';
+import { Navbar } from '@/components/layout/Navbar';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Textarea } from '@/components/ui/textarea';
+import { ArrowLeft, Upload, X, Loader2, Check } from 'lucide-react';
+import { motion } from 'framer-motion';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+
+interface Worker {
+    _id: string;
+    name: string;
+}
+
+interface Farm {
+    _id: string;
+    name: string;
+}
+
+export default function AddTransactionPage() {
+    const { token } = useAuth();
+    const { t } = useLanguage();
+    const router = useRouter();
+
+    const [workers, setWorkers] = useState<Worker[]>([]);
+    const [farms, setFarms] = useState<Farm[]>([]);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const [formData, setFormData] = useState({
+        type: 'DEBIT',
+        workerId: '',
+        farmId: '',
+        amount: '',
+        description: '',
+        date: new Date().toISOString().split('T')[0],
+        billImageUrl: '',
+    });
+
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        fetchData();
+    }, [token]);
+
+    const fetchData = async () => {
+        try {
+            const [workersRes, farmsRes] = await Promise.all([
+                axios.get('/api/workers', { headers: { Authorization: `Bearer ${token}` } }),
+                axios.get('/api/farms', { headers: { Authorization: `Bearer ${token}` } }),
+            ]);
+            setWorkers(workersRes.data.workers || []);
+            setFarms(farmsRes.data.farms || []);
+        } catch (error) {
+            toast.error('Failed to load data');
+        }
+    };
+
+    const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!allowedTypes.includes(file.type)) {
+            toast.error('Only JPG, PNG, and WEBP images are allowed');
+            return;
+        }
+
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            toast.error('Image size must be less than 5MB');
+            return;
+        }
+
+        setImageFile(file);
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagePreview(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    const handleRemoveImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+        setFormData({ ...formData, billImageUrl: '' });
+    };
+
+    const uploadImage = async () => {
+        if (!imageFile) return null;
+
+        setIsUploading(true);
+        try {
+            const uploadFormData = new FormData();
+            uploadFormData.append('file', imageFile);
+
+            const response = await axios.post('/api/upload', uploadFormData, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            return response.data.url;
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || 'Image upload failed');
+            return null;
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!formData.workerId) {
+            toast.error('Please select a worker');
+            return;
+        }
+
+        if (!formData.amount || Number(formData.amount) <= 0) {
+            toast.error('Please enter a valid amount');
+            return;
+        }
+
+        if (!formData.description.trim()) {
+            toast.error('Please enter a description');
+            return;
+        }
+
+        if (formData.type === 'CREDIT' && imageFile) {
+            toast.error('Credit transactions cannot have bill images');
+            return;
+        }
+
+        setIsSubmitting(true);
+
+        try {
+            let billImageUrl = formData.billImageUrl;
+
+            if (imageFile && formData.type === 'DEBIT') {
+                billImageUrl = await uploadImage();
+                if (!billImageUrl) {
+                    setIsSubmitting(false);
+                    return;
+                }
+            }
+
+            await axios.post('/api/transactions', {
+                type: formData.type,
+                workerId: formData.workerId,
+                farmId: formData.farmId || undefined,
+                amount: Number(formData.amount),
+                description: formData.description.trim(),
+                date: formData.date,
+                billImageUrl,
+            }, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            toast.success('Transaction added successfully!');
+            router.push('/dashboard/transactions');
+        } catch (error: any) {
+            toast.error(error.response?.data?.error || 'Failed to add transaction');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+            <Navbar />
+
+            <div className="container mx-auto px-4 py-8 max-w-3xl">
+                <Button
+                    variant="ghost"
+                    onClick={() => router.back()}
+                    className="mb-6"
+                >
+                    <ArrowLeft className="mr-2 h-4 w-4" />
+                    Back
+                </Button>
+
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                >
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="text-2xl">{t.transactions.addNew}</CardTitle>
+                            <CardDescription>
+                                Add a new transaction to your farm ledger
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="type">{t.transactions.type}</Label>
+                                        <Select
+                                            value={formData.type}
+                                            onValueChange={(v) => {
+                                                setFormData({ ...formData, type: v });
+                                                if (v === 'CREDIT') {
+                                                    handleRemoveImage();
+                                                }
+                                            }}
+                                        >
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="DEBIT">{t.transactions.debit}</SelectItem>
+                                                <SelectItem value="CREDIT">{t.transactions.credit}</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="amount">{t.transactions.amount}</Label>
+                                        <Input
+                                            id="amount"
+                                            type="number"
+                                            placeholder="1000"
+                                            value={formData.amount}
+                                            onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                                            required
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="worker">{t.transactions.worker} *</Label>
+                                        <Select value={formData.workerId} onValueChange={(v) => setFormData({ ...formData, workerId: v })}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select worker" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {workers.map(w => (
+                                                    <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        {workers.length === 0 && (
+                                            <p className="text-xs text-gray-500">
+                                                No workers found.{' '}
+                                                <Button
+                                                    type="button"
+                                                    variant="link"
+                                                    className="p-0 h-auto text-xs"
+                                                    onClick={() => router.push('/dashboard/workers')}
+                                                >
+                                                    Add a worker first
+                                                </Button>
+                                            </p>
+                                        )}
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="farm">{t.transactions.farm}</Label>
+                                        <Select value={formData.farmId} onValueChange={(v) => setFormData({ ...formData, farmId: v })}>
+                                            <SelectTrigger>
+                                                <SelectValue placeholder="Select farm (optional)" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="">None</SelectItem>
+                                                {farms.map(f => (
+                                                    <SelectItem key={f._id} value={f._id}>{f.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="date">{t.transactions.date}</Label>
+                                    <Input
+                                        id="date"
+                                        type="date"
+                                        value={formData.date}
+                                        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                                        required
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="description">{t.transactions.description}</Label>
+                                    <Textarea
+                                        id="description"
+                                        placeholder="Enter transaction details..."
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        required
+                                        rows={3}
+                                    />
+                                </div>
+
+                                {formData.type === 'DEBIT' && (
+                                    <div className="space-y-2">
+                                        <Label>{t.transactions.uploadBill}</Label>
+
+                                        {!imagePreview ? (
+                                            <div className="border-2 border-dashed border-gray-300 dark:border-gray-700 rounded-lg p-8 text-center hover:border-emerald-500 transition-colors cursor-pointer">
+                                                <input
+                                                    type="file"
+                                                    accept="image/jpeg,image/jpg,image/png,image/webp"
+                                                    onChange={handleImageSelect}
+                                                    className="hidden"
+                                                    id="bill-upload"
+                                                />
+                                                <label htmlFor="bill-upload" className="cursor-pointer">
+                                                    <Upload className="h-12 w-12 mx-auto text-gray-400 mb-4" />
+                                                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                                                        Click to upload bill image
+                                                    </p>
+                                                    <p className="text-xs text-gray-500 mt-2">
+                                                        JPG, PNG or WEBP (max 5MB)
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        ) : (
+                                            <div className="relative">
+                                                <img
+                                                    src={imagePreview}
+                                                    alt="Bill preview"
+                                                    className="w-full max-h-64 object-contain rounded-lg border"
+                                                />
+                                                <Button
+                                                    type="button"
+                                                    variant="destructive"
+                                                    size="sm"
+                                                    className="absolute top-2 right-2"
+                                                    onClick={handleRemoveImage}
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div className="flex gap-4">
+                                    <Button
+                                        type="submit"
+                                        className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+                                        disabled={isSubmitting || isUploading}
+                                    >
+                                        {isSubmitting || isUploading ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                {isUploading ? 'Uploading...' : 'Saving...'}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Check className="mr-2 h-4 w-4" />
+                                                {t.common.save}
+                                            </>
+                                        )}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => router.back()}
+                                        disabled={isSubmitting}
+                                    >
+                                        {t.common.cancel}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </motion.div>
+            </div>
+        </div>
+    );
+}
