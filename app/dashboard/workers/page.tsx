@@ -9,7 +9,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Plus, Users, Loader2 } from 'lucide-react';
+import { Plus, Users } from 'lucide-react';
+import { LoaderOne, LoaderTwo } from '@/components/ui/loader';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -24,7 +25,7 @@ interface Worker {
 
 export default function WorkersPage() {
     const { token } = useAuth();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const router = useRouter();
 
     const [workers, setWorkers] = useState<Worker[]>([]);
@@ -81,7 +82,7 @@ export default function WorkersPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto w-full px-4 py-8">
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -137,12 +138,7 @@ export default function WorkersPage() {
                                     </div>
                                     <div className="flex gap-2">
                                         <Button type="submit" disabled={isAdding}>
-                                            {isAdding ? (
-                                                <>
-                                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                                    Adding...
-                                                </>
-                                            ) : (
+                                            {isAdding ? <LoaderOne /> : (
                                                 <>
                                                     <Plus className="mr-2 h-4 w-4" />
                                                     {t.common.add}
@@ -172,8 +168,9 @@ export default function WorkersPage() {
                     </CardHeader>
                     <CardContent>
                         {isLoading ? (
-                            <div className="text-center py-8 text-gray-500">
-                                Loading workers...
+                            <div className="py-20 flex flex-col items-center justify-center">
+                                <LoaderTwo />
+                                <p className="mt-6 text-gray-500 font-medium">Loading workers...</p>
                             </div>
                         ) : workers.length === 0 ? (
                             <div className="text-center py-12">
@@ -193,23 +190,23 @@ export default function WorkersPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
                                     >
-                                        <Card className="hover:shadow-lg transition-shadow">
+                                        <Card className="hover:shadow-md transition-all border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden group">
                                             <CardContent className="p-6">
                                                 <div className="flex items-center space-x-4">
-                                                    <div className="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/20 flex items-center justify-center">
-                                                        <span className="text-xl font-semibold text-emerald-600">
+                                                    <div className="w-14 h-14 rounded-2xl bg-emerald-50 dark:bg-emerald-900/20 flex items-center justify-center transition-colors group-hover:bg-emerald-100 dark:group-hover:bg-emerald-900/40">
+                                                        <span className="text-2xl font-bold text-emerald-600">
                                                             {worker.name.charAt(0).toUpperCase()}
                                                         </span>
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">
                                                             {worker.name}
                                                         </h3>
                                                         {worker.phone && (
-                                                            <p className="text-sm text-gray-500">{worker.phone}</p>
+                                                            <p className="text-sm text-gray-500 font-medium">{worker.phone}</p>
                                                         )}
                                                         <p className="text-xs text-gray-400 mt-1">
-                                                            Added {new Date(worker.createdAt).toLocaleDateString()}
+                                                            Joined {new Date(worker.createdAt).toLocaleDateString()}
                                                         </p>
                                                     </div>
                                                 </div>

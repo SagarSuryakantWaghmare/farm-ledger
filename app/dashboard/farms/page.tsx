@@ -13,12 +13,14 @@ import { Plus, MapPin, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { Badge } from '@/components/ui/badge';
 
 interface Farm {
     _id: string;
     name: string;
     location?: string;
     area?: number;
+    unit?: string;
     isActive: boolean;
     createdAt: string;
 }
@@ -86,7 +88,7 @@ export default function FarmsPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto w-full px-4 py-8">
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -207,25 +209,26 @@ export default function FarmsPage() {
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: idx * 0.05 }}
                                     >
-                                        <Card className="hover:shadow-lg transition-shadow">
+                                        <Card className="hover:shadow-md transition-all border-2 border-gray-100 dark:border-gray-800 rounded-2xl overflow-hidden group">
                                             <CardContent className="p-6">
                                                 <div className="flex items-center space-x-4">
-                                                    <div className="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/20 flex items-center justify-center">
-                                                        <MapPin className="h-6 w-6 text-purple-600" />
+                                                    <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center transition-colors group-hover:bg-blue-100 dark:group-hover:bg-blue-900/40">
+                                                        <MapPin className="h-7 w-7 text-blue-600" />
                                                     </div>
                                                     <div className="flex-1">
-                                                        <h3 className="font-semibold text-gray-900 dark:text-white">
+                                                        <h3 className="font-bold text-lg text-gray-900 dark:text-white">
                                                             {farm.name}
                                                         </h3>
                                                         {farm.location && (
-                                                            <p className="text-sm text-gray-500">{farm.location}</p>
+                                                            <p className="text-sm text-gray-500 font-medium">{farm.location}</p>
                                                         )}
-                                                        {farm.area && (
-                                                            <p className="text-xs text-gray-400">{farm.area} acres</p>
-                                                        )}
-                                                        <p className="text-xs text-gray-400 mt-1">
-                                                            Added {new Date(farm.createdAt).toLocaleDateString()}
-                                                        </p>
+                                                        <div className="flex items-center mt-2 space-x-2">
+                                                            {farm.area && (
+                                                                <Badge variant="secondary" className="bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300 border-0">
+                                                                    {farm.area} {farm.unit || 'Acres'}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </CardContent>

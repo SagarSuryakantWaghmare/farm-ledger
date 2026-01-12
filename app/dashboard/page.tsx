@@ -84,7 +84,7 @@ export default function DashboardPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8 flex-1">
+            <div className="max-w-7xl mx-auto w-full px-4 py-8 flex-1">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -126,7 +126,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.3 }}
                     >
                         <Button
-                            className="w-full h-24 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white shadow-lg"
+                            className="w-full h-24 bg-white dark:bg-gray-900 border-emerald-200 dark:border-emerald-800 border-2 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 shadow-sm"
                             onClick={() => router.push('/dashboard/transactions')}
                         >
                             <div className="flex flex-col items-center">
@@ -142,7 +142,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.4 }}
                     >
                         <Button
-                            className="w-full h-24 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white shadow-lg"
+                            className="w-full h-24 bg-white dark:bg-gray-900 border-blue-200 dark:border-blue-800 border-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 text-blue-700 dark:text-blue-400 shadow-sm"
                             onClick={() => router.push('/dashboard/workers')}
                         >
                             <div className="flex flex-col items-center">
@@ -158,7 +158,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.5 }}
                     >
                         <Button
-                            className="w-full h-24 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg"
+                            className="w-full h-24 bg-white dark:bg-gray-900 border-purple-200 dark:border-purple-800 border-2 hover:bg-purple-50 dark:hover:bg-purple-900/20 text-purple-700 dark:text-purple-400 shadow-sm"
                             onClick={() => router.push('/dashboard/farms')}
                         >
                             <div className="flex flex-col items-center">
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                         transition={{ delay: 0.6 }}
                     >
                         <Button
-                            className="w-full h-24 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg"
+                            className="w-full h-24 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md border-0"
                             onClick={() => router.push('/dashboard/transactions/new')}
                         >
                             <div className="flex flex-col items-center">
@@ -190,9 +190,9 @@ export default function DashboardPage() {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.7 }}
                 >
-                    <Card>
+                    <Card className="border-0 shadow-lg bg-white dark:bg-gray-900">
                         <CardHeader>
-                            <CardTitle>{t.dashboard.recentTransactions}</CardTitle>
+                            <CardTitle className="text-xl">{t.dashboard.recentTransactions}</CardTitle>
                             <CardDescription>
                                 Your latest {transactions.slice(0, 5).length} transactions
                             </CardDescription>
@@ -207,7 +207,7 @@ export default function DashboardPage() {
                                     <Receipt className="h-12 w-12 mx-auto text-gray-400 mb-4" />
                                     <p className="text-gray-500">No transactions yet</p>
                                     <Button
-                                        className="mt-4"
+                                        className="mt-4 bg-emerald-600 hover:bg-emerald-700"
                                         onClick={() => router.push('/dashboard/transactions/new')}
                                     >
                                         <Plus className="mr-2 h-4 w-4" />
@@ -222,28 +222,30 @@ export default function DashboardPage() {
                                             initial={{ opacity: 0, x: -20 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: idx * 0.1 }}
-                                            className="flex items-center justify-between p-4 rounded-lg border hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors"
+                                            className="flex items-center justify-between p-4 rounded-xl border border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-all cursor-pointer shadow-sm hover:shadow-md"
                                         >
                                             <div className="flex items-center space-x-4">
-                                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.type === 'DEBIT'
-                                                    ? 'bg-red-100 dark:bg-red-900/20 text-red-600'
-                                                    : 'bg-green-100 dark:bg-green-900/20 text-green-600'
+                                                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${txn.type === 'DEBIT'
+                                                    ? 'bg-red-50 dark:bg-red-900/20 text-red-600'
+                                                    : 'bg-green-50 dark:bg-green-900/20 text-green-600'
                                                     }`}>
                                                     {txn.type === 'DEBIT' ? '↓' : '↑'}
                                                 </div>
                                                 <div>
-                                                    <p className="font-medium text-gray-900 dark:text-white">
+                                                    <p className="font-semibold text-gray-900 dark:text-white">
                                                         {txn.description}
                                                     </p>
-                                                    <p className="text-sm text-gray-500">
+                                                    <p className="text-xs text-gray-500 dark:text-gray-400">
                                                         {txn.workerId?.name} • {new Date(txn.date).toLocaleDateString()}
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p className={`font-semibold ${txn.type === 'DEBIT' ? 'text-red-600' : 'text-green-600'
-                                                }`}>
-                                                {txn.type === 'DEBIT' ? '-' : '+'}₹{txn.amount.toLocaleString('en-IN')}
-                                            </p>
+                                            <div className="text-right">
+                                                <p className={`text-lg font-bold ${txn.type === 'DEBIT' ? 'text-red-500' : 'text-emerald-500'
+                                                    }`}>
+                                                    {txn.type === 'DEBIT' ? '-' : '+'}₹{txn.amount.toLocaleString('en-IN')}
+                                                </p>
+                                            </div>
                                         </motion.div>
                                     ))}
                                 </div>
@@ -252,6 +254,7 @@ export default function DashboardPage() {
                     </Card>
                 </motion.div>
             </div>
+
 
             <Footer />
         </div>

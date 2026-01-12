@@ -13,7 +13,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Filter, X, Receipt, Image as ImageIcon, Loader2, FileText, Trash2 } from 'lucide-react';
+import { Plus, Filter, X, Receipt, Image as ImageIcon, FileText, Trash2 } from 'lucide-react';
+import { LoaderTwo } from '@/components/ui/loader';
 import { motion } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
@@ -42,7 +43,7 @@ interface Farm {
 
 export default function TransactionsPage() {
     const { token } = useAuth();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
     const router = useRouter();
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -138,7 +139,7 @@ export default function TransactionsPage() {
         <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
             <Navbar />
 
-            <div className="container mx-auto px-4 py-8">
+            <div className="max-w-7xl mx-auto w-full px-4 py-12 flex-1">
                 <div className="flex items-center justify-between mb-8">
                     <div>
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
@@ -157,45 +158,50 @@ export default function TransactionsPage() {
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <Card className="border-l-4 border-l-red-500">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <Card className="border-2 border-red-100 dark:border-red-900/20 shadow-sm bg-white dark:bg-gray-900 rounded-2xl">
                         <CardContent className="p-6">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Total Debit</p>
-                            <p className="text-2xl font-bold text-red-600">
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Total Debit</p>
+                            <p className="text-3xl font-extrabold text-red-500">
                                 ₹{summary.totalDebit.toLocaleString('en-IN')}
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="border-l-4 border-l-green-500">
+                    <Card className="border-2 border-emerald-100 dark:border-emerald-900/20 shadow-sm bg-white dark:bg-gray-900 rounded-2xl">
                         <CardContent className="p-6">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Total Credit</p>
-                            <p className="text-2xl font-bold text-green-600">
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Total Credit</p>
+                            <p className="text-3xl font-extrabold text-emerald-500">
                                 ₹{summary.totalCredit.toLocaleString('en-IN')}
                             </p>
                         </CardContent>
                     </Card>
-                    <Card className="border-l-4 border-l-blue-500">
+                    <Card className="border-2 border-blue-100 dark:border-blue-900/20 shadow-sm bg-white dark:bg-gray-900 rounded-2xl">
                         <CardContent className="p-6">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">Net Balance</p>
-                            <p className="text-2xl font-bold text-blue-600">
+                            <p className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2">Net Balance</p>
+                            <p className="text-3xl font-extrabold text-blue-500">
                                 ₹{summary.netBalance.toLocaleString('en-IN')}
                             </p>
                         </CardContent>
                     </Card>
                 </div>
 
-                <Card className="mb-6">
-                    <CardHeader>
+                <Card className="mb-8 border-0 shadow-lg bg-white dark:bg-gray-900 rounded-2xl overflow-hidden">
+                    <CardHeader className="border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50">
                         <div className="flex items-center justify-between">
                             <div>
-                                <CardTitle className="flex items-center gap-2">
-                                    <Filter className="h-5 w-5" />
+                                <CardTitle className="flex items-center gap-2 text-lg">
+                                    <Filter className="h-5 w-5 text-emerald-500" />
                                     {t.transactions.filterByDate}
                                 </CardTitle>
-                                <CardDescription>Filter transactions by criteria</CardDescription>
+                                <CardDescription>Refine your transaction view</CardDescription>
                             </div>
                             {hasActiveFilters && (
-                                <Button variant="ghost" size="sm" onClick={clearFilters}>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={clearFilters}
+                                    className="text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20"
+                                >
                                     <X className="mr-2 h-4 w-4" />
                                     Clear Filters
                                 </Button>
@@ -274,9 +280,11 @@ export default function TransactionsPage() {
                     </CardHeader>
                     <CardContent>
                         {isLoading ? (
-                            <div className="text-center py-12">
-                                <Loader2 className="h-12 w-12 mx-auto animate-spin text-emerald-600" />
-                                <p className="mt-4 text-gray-500">Loading transactions...</p>
+                            <div className="py-20 text-center">
+                                <div className="flex justify-center">
+                                    <LoaderTwo />
+                                </div>
+                                <p className="mt-4 text-gray-500 font-medium">{language === 'en' ? 'Fetching transactions...' : 'व्यवहार मिळवत आहे...'}</p>
                             </div>
                         ) : transactions.length === 0 ? (
                             <div className="text-center py-12">

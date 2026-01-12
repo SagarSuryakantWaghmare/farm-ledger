@@ -37,7 +37,7 @@ export function Navbar() {
             animate={{ y: 0 }}
             className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-lg dark:bg-gray-950/80"
         >
-            <div className="container mx-auto px-4">
+            <div className="max-w-7xl mx-auto w-full px-4">
                 <div className="flex h-16 items-center justify-between">
                     <Link href="/dashboard" className="flex items-center space-x-2">
                         <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-emerald-500 text-white">
