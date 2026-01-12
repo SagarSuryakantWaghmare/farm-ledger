@@ -4,13 +4,11 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { Sprout, LogIn } from 'lucide-react';
-import { LoaderOne } from '@/components/ui/loader';
+import { Sprout } from 'lucide-react';
 import { StatefulButton } from '@/components/ui/stateful-button';
 
 export default function LoginPage() {
@@ -32,7 +30,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-950 dark:via-gray-900 dark:to-emerald-950 p-4">
+        <div className="min-h-screen w-full flex items-center justify-center bg-white dark:bg-gray-950 p-4">
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}

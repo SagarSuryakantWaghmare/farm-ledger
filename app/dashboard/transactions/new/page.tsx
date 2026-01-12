@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, Upload, X, Check } from 'lucide-react';
+import { ArrowLeft, Upload, X } from 'lucide-react';
+import Image from 'next/image';
 import { LoaderOne } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'framer-motion';
@@ -51,15 +52,7 @@ export default function AddTransactionPage() {
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!token) {
-            router.push('/login');
-            return;
-        }
-        fetchData();
-    }, [token]);
-
-    const fetchData = async () => {
+    const fetchData = useCallback(async () => {
         try {
             const [workersRes, farmsRes] = await Promise.all([
                 axios.get('/api/workers', { headers: { Authorization: `Bearer ${token}` } }),
@@ -67,10 +60,19 @@ export default function AddTransactionPage() {
             ]);
             setWorkers(workersRes.data.workers || []);
             setFarms(farmsRes.data.farms || []);
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error('Data fetch error:', error);
             toast.error('Failed to load data');
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        fetchData();
+    }, [token, fetchData, router]);
 
     const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -118,8 +120,9 @@ export default function AddTransactionPage() {
             });
 
             return response.data.url;
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Image upload failed');
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error) ? error.response?.data?.error : 'Image upload failed';
+            toast.error(message || 'Image upload failed');
             return null;
         } finally {
             setIsUploading(false);
@@ -176,8 +179,9 @@ export default function AddTransactionPage() {
 
             toast.success('Transaction added successfully!');
             router.push('/dashboard/transactions');
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to add transaction');
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error) ? error.response?.data?.error : 'Failed to add transaction';
+            toast.error(message || 'Failed to add transaction');
         } finally {
             setIsSubmitting(false);
         }
@@ -347,11 +351,13 @@ export default function AddTransactionPage() {
                                                 </label>
                                             </div>
                                         ) : (
-                                            <div className="relative">
-                                                <img
+                                            <div className="relative w-full h-64">
+                                                <Image
                                                     src={imagePreview}
                                                     alt="Bill preview"
-                                                    className="w-full max-h-64 object-contain rounded-lg border"
+                                                    fill
+                                                    className="object-contain rounded-lg border"
+                                                    unoptimized
                                                 />
                                                 <Button
                                                     type="button"

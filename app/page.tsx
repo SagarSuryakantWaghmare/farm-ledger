@@ -6,9 +6,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import Link from 'next/link';
 import {
   Sprout,
-  TrendingUp,
   Users,
   FileText,
   Image as ImageIcon,
@@ -16,12 +16,9 @@ import {
   Globe,
   Zap,
   ArrowRight,
-  CheckCircle2,
-  Menu,
-  X
 } from 'lucide-react';
 import { LoaderFive } from '@/components/ui/loader';
-import { Navbar as ResizableNav, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavToggle, MobileNavMenu } from '@/components/ui/resizable-navbar';
+import { Navbar as ResizableNav, NavBody, NavItems, NavbarLogo, NavbarButton, MobileNav, MobileNavHeader, MobileNavToggle, MobileNavMenu, NavbarToggles } from '@/components/ui/resizable-navbar';
 
 import { HeroParallax } from '@/components/ui/hero-parallax';
 
@@ -110,10 +107,13 @@ export default function LandingPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    if (!isLoading && token) {
-      router.push('/dashboard');
-    }
+    const init = async () => {
+      setMounted(true);
+      if (!isLoading && token) {
+        router.push('/dashboard');
+      }
+    };
+    init();
   }, [token, isLoading, router]);
 
   if (!mounted || isLoading) {
@@ -142,6 +142,8 @@ export default function LandingPage() {
             ]}
           />
           <div className="flex items-center gap-4">
+            <NavbarToggles />
+            <div className="h-6 w-px bg-gray-200 dark:bg-neutral-800" />
             <NavbarButton variant="secondary" onClick={() => router.push('/login')}>
               Login
             </NavbarButton>
@@ -161,11 +163,15 @@ export default function LandingPage() {
           </MobileNavHeader>
           <MobileNavMenu isOpen={isMobileMenuOpen} onClose={() => setIsMobileMenuOpen(false)}>
             <div className="flex flex-col gap-4 w-full">
-              <a href="/" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Home</a>
-              <a href="/dashboard" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Dashboard</a>
-              <a href="/dashboard/workers" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Workers</a>
-              <a href="/dashboard/farms" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Farms</a>
-              <hr className="my-2" />
+              <div className="flex items-center justify-between px-4 py-2 bg-gray-50 dark:bg-neutral-900 rounded-xl">
+                <span className="text-sm font-medium">Appearance & Language</span>
+                <NavbarToggles />
+              </div>
+              <Link href="/" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Home</Link>
+              <Link href="/dashboard" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Dashboard</Link>
+              <Link href="/dashboard/workers" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Workers</Link>
+              <Link href="/dashboard/farms" className="text-lg font-semibold px-4 py-2 hover:bg-gray-100 rounded-xl">Farms</Link>
+              <hr className="my-1" />
               <Button variant="ghost" className="w-full justify-start text-lg h-12 rounded-xl" onClick={() => router.push('/login')}>
                 Login
               </Button>

@@ -41,14 +41,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const router = useRouter();
 
     useEffect(() => {
-        const savedToken = localStorage.getItem('farmledger_token');
-        const savedUser = localStorage.getItem('farmledger_user');
+        const initializeAuth = async () => {
+            const savedToken = localStorage.getItem('farmledger_token');
+            const savedUser = localStorage.getItem('farmledger_user');
 
-        if (savedToken && savedUser) {
-            setToken(savedToken);
-            setUser(JSON.parse(savedUser));
-        }
-        setIsLoading(false);
+            if (savedToken && savedUser) {
+                setToken(savedToken);
+                setUser(JSON.parse(savedUser));
+            }
+            setIsLoading(false);
+        };
+        initializeAuth();
     }, []);
 
     const login = async (emailOrPhone: string, pin: string) => {
@@ -64,8 +67,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             toast.success('Login successful!');
             router.push('/dashboard');
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Login failed');
+        } catch (error: unknown) {
+            let errorMessage = 'Login failed';
+            if (axios.isAxiosError(error) && error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            }
+            toast.error(errorMessage);
             throw error;
         }
     };
@@ -83,8 +90,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
             toast.success('Account created successfully!');
             router.push('/dashboard');
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Signup failed');
+        } catch (error: unknown) {
+            let errorMessage = 'Signup failed';
+            if (axios.isAxiosError(error) && error.response?.data?.error) {
+                errorMessage = error.response.data.error;
+            }
+            toast.error(errorMessage);
             throw error;
         }
     };

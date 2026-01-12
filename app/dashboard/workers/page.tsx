@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, Users } from 'lucide-react';
-import { LoaderOne, LoaderTwo } from '@/components/ui/loader';
+import { LoaderTwo } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -26,7 +26,7 @@ interface Worker {
 
 export default function WorkersPage() {
     const { token } = useAuth();
-    const { t, language } = useLanguage();
+    const { t } = useLanguage();
     const router = useRouter();
 
     const [workers, setWorkers] = useState<Worker[]>([]);
@@ -35,26 +35,27 @@ export default function WorkersPage() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [newWorker, setNewWorker] = useState({ name: '', phone: '' });
 
+    const fetchWorkers = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/workers', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setWorkers(response.data.workers || []);
+        } catch (error: unknown) {
+            console.error('Fetch workers error:', error);
+            toast.error('Failed to load workers');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [token]);
+
     useEffect(() => {
         if (!token) {
             router.push('/login');
             return;
         }
         fetchWorkers();
-    }, [token]);
-
-    const fetchWorkers = async () => {
-        try {
-            const response = await axios.get('/api/workers', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setWorkers(response.data.workers || []);
-        } catch (error: any) {
-            toast.error('Failed to load workers');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, [token, fetchWorkers, router]);
 
     const handleAddWorker = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -72,8 +73,9 @@ export default function WorkersPage() {
             setNewWorker({ name: '', phone: '' });
             setShowAddForm(false);
             fetchWorkers();
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to add worker');
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error) ? error.response?.data?.error : 'Failed to add worker';
+            toast.error(message || 'Failed to add worker');
         } finally {
             setIsAdding(false);
         }

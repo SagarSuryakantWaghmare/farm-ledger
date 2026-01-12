@@ -57,7 +57,8 @@ export async function POST(req: NextRequest) {
             },
         }, { status: 201 });
 
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Signup failed' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Signup failed';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

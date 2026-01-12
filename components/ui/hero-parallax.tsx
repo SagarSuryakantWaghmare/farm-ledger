@@ -107,7 +107,7 @@ export const Header = () => {
       <div className="max-w-4xl backdrop-blur-[2px] rounded-3xl p-8 bg-white/5 dark:bg-black/5 border border-white/10">
         <h1 className="text-5xl md:text-8xl font-black text-gray-900 dark:text-white tracking-tight leading-[0.9] mb-8">
           Manage Your Farm <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500">
+          <span className="text-emerald-600 dark:text-emerald-500">
             Expenses Smartly
           </span>
         </h1>

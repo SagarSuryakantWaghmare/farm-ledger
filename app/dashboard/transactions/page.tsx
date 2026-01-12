@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -12,10 +12,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Plus, Filter, X, Receipt, Image as ImageIcon, FileText, Trash2 } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Plus, Filter, X, Receipt, Image as ImageIcon } from 'lucide-react';
 import { LoaderTwo } from '@/components/ui/loader';
-import { motion } from 'framer-motion';
+import Image from 'next/image';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -24,11 +24,11 @@ interface Transaction {
     type: string;
     amount: number;
     description: string;
-    workerId: any;
-    farmId: any;
+    workerId: { name: string } | null;
+    farmId: { name: string } | null;
     billImageUrl: string | null;
     date: string;
-    createdBy: any;
+    createdBy: { name: string };
 }
 
 interface Worker {
@@ -48,7 +48,6 @@ export default function TransactionsPage() {
 
     const [transactions, setTransactions] = useState<Transaction[]>([]);
     const [workers, setWorkers] = useState<Worker[]>([]);
-    const [farms, setFarms] = useState<Farm[]>([]);
     const [isLoading, setIsLoading] = useState(true);
 
     const [filters, setFilters] = useState({
@@ -68,35 +67,7 @@ export default function TransactionsPage() {
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    useEffect(() => {
-        if (!token) {
-            router.push('/login');
-            return;
-        }
-        fetchData();
-    }, [token]);
-
-    useEffect(() => {
-        if (token) {
-            fetchTransactions();
-        }
-    }, [filters]);
-
-    const fetchData = async () => {
-        try {
-            const [workersRes, farmsRes] = await Promise.all([
-                axios.get('/api/workers', { headers: { Authorization: `Bearer ${token}` } }),
-                axios.get('/api/farms', { headers: { Authorization: `Bearer ${token}` } }),
-            ]);
-            setWorkers(workersRes.data.workers || []);
-            setFarms(farmsRes.data.farms || []);
-            await fetchTransactions();
-        } catch (error) {
-            toast.error('Failed to load data');
-        }
-    };
-
-    const fetchTransactions = async () => {
+    const fetchTransactions = useCallback(async () => {
         try {
             const params = new URLSearchParams();
             if (filters.workerId) params.append('workerId', filters.workerId);
@@ -116,12 +87,40 @@ export default function TransactionsPage() {
                 netBalance: 0,
                 count: 0,
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            console.error('Fetch transactions error:', error);
             toast.error('Failed to load transactions');
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [token, filters]);
+
+    const fetchData = useCallback(async () => {
+        try {
+            const [workersRes] = await Promise.all([
+                axios.get('/api/workers', { headers: { Authorization: `Bearer ${token}` } }),
+            ]);
+            setWorkers(workersRes.data.workers || []);
+            await fetchTransactions();
+        } catch (error: unknown) {
+            console.error('Fetch basic data error:', error);
+            toast.error('Failed to load data');
+        }
+    }, [token, fetchTransactions]);
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        fetchData();
+    }, [token, fetchData, router]);
+
+    useEffect(() => {
+        if (token) {
+            fetchTransactions();
+        }
+    }, [token, fetchTransactions]);
 
     const clearFilters = () => {
         setFilters({
@@ -334,7 +333,7 @@ export default function TransactionsPage() {
                                                     {txn.billImageUrl ? (
                                                         <Dialog>
                                                             <DialogTrigger asChild>
-                                                                <Button variant="ghost" size="sm" onClick={() => setSelectedImage(txn.billImageUrl)}>
+                                                                <Button variant="ghost" size="sm">
                                                                     <ImageIcon className="h-4 w-4" />
                                                                 </Button>
                                                             </DialogTrigger>
@@ -342,11 +341,13 @@ export default function TransactionsPage() {
                                                                 <DialogHeader>
                                                                     <DialogTitle>Bill Image</DialogTitle>
                                                                 </DialogHeader>
-                                                                <div className="mt-4">
-                                                                    <img
+                                                                <div className="relative w-full h-[60vh] mt-4">
+                                                                    <Image
                                                                         src={txn.billImageUrl}
                                                                         alt="Bill"
-                                                                        className="w-full rounded-lg"
+                                                                        fill
+                                                                        className="object-contain rounded-lg"
+                                                                        unoptimized
                                                                     />
                                                                 </div>
                                                             </DialogContent>

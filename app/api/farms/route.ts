@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
         const farms = await Farm.find({ accountId: auth.accountId }).sort({ createdAt: -1 });
 
         return NextResponse.json({ farms });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to fetch farms' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch farms';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
 
@@ -42,7 +43,8 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({ farm }, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to create farm' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create farm';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Plus, MapPin } from 'lucide-react';
-import { LoaderOne, LoaderTwo } from '@/components/ui/loader';
+import { LoaderTwo } from '@/components/ui/loader';
 import { StatefulButton } from '@/components/ui/stateful-button';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -38,26 +38,27 @@ export default function FarmsPage() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [newFarm, setNewFarm] = useState({ name: '', location: '', area: '' });
 
+    const fetchFarms = useCallback(async () => {
+        try {
+            const response = await axios.get('/api/farms', {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+            setFarms(response.data.farms || []);
+        } catch (error: unknown) {
+            console.error('Failed to load farms:', error);
+            toast.error('Failed to load farms');
+        } finally {
+            setIsLoading(false);
+        }
+    }, [token]);
+
     useEffect(() => {
         if (!token) {
             router.push('/login');
             return;
         }
         fetchFarms();
-    }, [token]);
-
-    const fetchFarms = async () => {
-        try {
-            const response = await axios.get('/api/farms', {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-            setFarms(response.data.farms || []);
-        } catch (error: any) {
-            toast.error('Failed to load farms');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+    }, [token, fetchFarms, router]);
 
     const handleAddFarm = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -79,8 +80,9 @@ export default function FarmsPage() {
             setNewFarm({ name: '', location: '', area: '' });
             setShowAddForm(false);
             fetchFarms();
-        } catch (error: any) {
-            toast.error(error.response?.data?.error || 'Failed to add farm');
+        } catch (error: unknown) {
+            const message = axios.isAxiosError(error) ? error.response?.data?.error : 'Failed to add farm';
+            toast.error(message || 'Failed to add farm');
         } finally {
             setIsAdding(false);
         }

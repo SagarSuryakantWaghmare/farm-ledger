@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
         const workers = await Worker.find({ accountId: auth.accountId }).sort({ createdAt: -1 });
 
         return NextResponse.json({ workers });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to fetch workers' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch workers';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
 
@@ -41,7 +42,8 @@ export async function POST(req: NextRequest) {
         });
 
         return NextResponse.json({ worker }, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to create worker' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create worker';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/lib/auth-context';
 import { useLanguage } from '@/lib/i18n';
 import { useRouter } from 'next/navigation';
@@ -9,7 +9,6 @@ import { Footer } from '@/components/layout/Footer';
 import { StatsCard } from '@/components/dashboard/StatsCard';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Plus, Receipt, Users, MapPin } from 'lucide-react';
 import { motion } from 'framer-motion';
 import axios from 'axios';
@@ -20,11 +19,11 @@ interface Transaction {
     type: string;
     amount: number;
     description: string;
-    workerId: any;
-    farmId: any;
+    workerId: { name: string } | null;
+    farmId: { name: string } | null;
     billImageUrl: string | null;
     date: string;
-    createdBy: any;
+    createdBy: { name: string };
 }
 
 interface Summary {
@@ -48,15 +47,7 @@ export default function DashboardPage() {
     });
     const [isLoading, setIsLoading] = useState(true);
 
-    useEffect(() => {
-        if (!token) {
-            router.push('/login');
-            return;
-        }
-        fetchDashboardData();
-    }, [token]);
-
-    const fetchDashboardData = async () => {
+    const fetchDashboardData = useCallback(async () => {
         try {
             const response = await axios.get('/api/transactions', {
                 headers: { Authorization: `Bearer ${token}` },
@@ -69,12 +60,21 @@ export default function DashboardPage() {
                 netBalance: 0,
                 count: 0,
             });
-        } catch (error: any) {
+        } catch (error: unknown) {
+            console.error('Dashboard data fetch error:', error);
             toast.error('Failed to load dashboard data');
         } finally {
             setIsLoading(false);
         }
-    };
+    }, [token]);
+
+    useEffect(() => {
+        if (!token) {
+            router.push('/login');
+            return;
+        }
+        fetchDashboardData();
+    }, [token, fetchDashboardData, router]);
 
     if (!user) {
         return null;

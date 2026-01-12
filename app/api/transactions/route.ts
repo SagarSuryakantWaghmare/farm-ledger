@@ -20,7 +20,14 @@ export async function GET(req: NextRequest) {
 
         await dbConnect();
 
-        const query: any = { accountId: auth.accountId };
+        type QueryType = {
+            accountId: string;
+            workerId?: string;
+            date?: { $gte?: Date; $lte?: Date };
+            billImageUrl?: { $ne: null } | null;
+            type?: string;
+        };
+        const query: QueryType = { accountId: auth.accountId };
 
         if (workerId) {
             query.workerId = workerId;
@@ -52,13 +59,18 @@ export async function GET(req: NextRequest) {
             .populate('createdBy', 'name')
             .sort({ date: -1, createdAt: -1 });
 
-        const totalDebit = transactions
-            .filter((t: any) => t.type === 'DEBIT')
-            .reduce((sum: number, t: any) => sum + t.amount, 0);
+        interface TSummary {
+            type: string;
+            amount: number;
+        }
 
-        const totalCredit = transactions
-            .filter((t: any) => t.type === 'CREDIT')
-            .reduce((sum: number, t: any) => sum + t.amount, 0);
+        const totalDebit = (transactions as unknown as TSummary[])
+            .filter((t) => t.type === 'DEBIT')
+            .reduce((sum, t) => sum + t.amount, 0);
+
+        const totalCredit = (transactions as unknown as TSummary[])
+            .filter((t) => t.type === 'CREDIT')
+            .reduce((sum, t) => sum + t.amount, 0);
 
         const netBalance = totalCredit - totalDebit;
 
@@ -71,8 +83,9 @@ export async function GET(req: NextRequest) {
                 count: transactions.length,
             },
         });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to fetch transactions' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to fetch transactions';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
 
@@ -126,8 +139,9 @@ export async function POST(req: NextRequest) {
             .populate('createdBy', 'name');
 
         return NextResponse.json({ transaction: populatedTransaction }, { status: 201 });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to create transaction' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to create transaction';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
 
@@ -147,7 +161,7 @@ export async function DELETE(req: NextRequest) {
 
         await dbConnect();
 
-        const query: any = { accountId: auth.accountId };
+        const query: Record<string, string | null | object> = { accountId: auth.accountId };
 
         if (eraseType === 'debit') {
             query.type = 'DEBIT';
@@ -162,7 +176,8 @@ export async function DELETE(req: NextRequest) {
             deletedCount: result.deletedCount,
             message: `${result.deletedCount} transactions erased`,
         });
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Failed to erase transactions' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to erase transactions';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

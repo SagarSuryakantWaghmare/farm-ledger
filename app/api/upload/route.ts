@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ error: validation.error }, { status: 400 });
         }
 
-        const result: any = await uploadImage(file);
+        const result = await uploadImage(file);
 
         return NextResponse.json({
             success: true,
@@ -30,7 +30,8 @@ export async function POST(req: NextRequest) {
             publicId: result.public_id,
         });
 
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message || 'Upload failed' }, { status: 500 });
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : 'Upload failed';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

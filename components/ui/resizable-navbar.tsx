@@ -8,7 +8,11 @@ import {
   useMotionValueEvent,
 } from "motion/react";
 
+import Link from "next/link";
 import React, { useRef, useState } from "react";
+import { useLanguage } from "@/lib/i18n";
+import { useTheme } from "next-themes";
+import { IconSun, IconMoon, IconLanguage } from "@tabler/icons-react";
 
 
 interface NavbarProps {
@@ -125,7 +129,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
       )}
     >
       {items.map((item, idx) => (
-        <a
+        <Link
           onMouseEnter={() => setHovered(idx)}
           onClick={onItemClick}
           className="relative px-4 py-2 text-neutral-600 dark:text-neutral-300"
@@ -139,7 +143,7 @@ export const NavItems = ({ items, className, onItemClick }: NavItemsProps) => {
             />
           )}
           <span className="relative z-20">{item.name}</span>
-        </a>
+        </Link>
       ))}
     </motion.div>
   );
@@ -273,7 +277,7 @@ export const NavbarButton = ({
   as?: React.ElementType;
   children: React.ReactNode;
   className?: string;
-  variant?: "primary" | "secondary" | "dark" | "gradient";
+  variant?: "primary" | "secondary" | "dark";
 } & (
     | React.ComponentPropsWithoutRef<"a">
     | React.ComponentPropsWithoutRef<"button">
@@ -286,8 +290,6 @@ export const NavbarButton = ({
       "shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
     secondary: "bg-transparent shadow-none dark:text-white",
     dark: "bg-black text-white shadow-[0_0_24px_rgba(34,_42,_53,_0.06),_0_1px_1px_rgba(0,_0,_0,_0.05),_0_0_0_1px_rgba(34,_42,_53,_0.04),_0_0_4px_rgba(34,_42,_53,_0.08),_0_16px_68px_rgba(47,_48,_55,_0.05),_0_1px_0_rgba(255,_255,_255,_0.1)_inset]",
-    gradient:
-      "bg-gradient-to-b from-blue-500 to-blue-700 text-white shadow-[0px_2px_0px_0px_rgba(255,255,255,0.3)_inset]",
   };
 
   return (
@@ -298,5 +300,36 @@ export const NavbarButton = ({
     >
       {children}
     </Tag>
+  );
+};
+export const NavbarToggles = () => {
+  const { language, setLanguage } = useLanguage();
+  const { theme, setTheme } = useTheme();
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'en' ? 'mr' : 'en');
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === 'dark' ? 'light' : 'dark');
+  };
+
+  return (
+    <div className="flex items-center space-x-2">
+      <button
+        onClick={toggleLanguage}
+        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-400"
+        title="Switch Language"
+      >
+        <IconLanguage size={20} />
+      </button>
+      <button
+        onClick={toggleTheme}
+        className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-neutral-800 transition-colors text-neutral-600 dark:text-neutral-400"
+        title="Toggle Theme"
+      >
+        {theme === 'dark' ? <IconSun size={20} /> : <IconMoon size={20} />}
+      </button>
+    </div>
   );
 };

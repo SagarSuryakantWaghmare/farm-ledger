@@ -22,10 +22,13 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const [language, setLanguageState] = useState<Language>('mr');
 
     useEffect(() => {
-        const saved = localStorage.getItem('language') as Language;
-        if (saved && (saved === 'en' || saved === 'mr')) {
-            setLanguageState(saved);
-        }
+        const initializeLanguage = async () => {
+            const saved = localStorage.getItem('language') as Language;
+            if (saved && (saved === 'en' || saved === 'mr')) {
+                setLanguageState(saved);
+            }
+        };
+        initializeLanguage();
     }, []);
 
     const setLanguage = (lang: Language) => {
