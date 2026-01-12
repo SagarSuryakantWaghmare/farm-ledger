@@ -214,7 +214,7 @@ export default function TransactionsPage() {
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="all">All Workers</SelectItem>
-                                        {workers.map(w => (
+                                        {workers.filter(w => w._id).map(w => (
                                             <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
                                         ))}
                                     </SelectContent>

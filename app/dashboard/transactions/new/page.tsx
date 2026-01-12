@@ -257,7 +257,8 @@ export default function AddTransactionPage() {
                                                 <SelectValue placeholder="Select worker" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {workers.map(w => (
+                                                <SelectItem value="none">Select worker</SelectItem>
+                                                {workers.filter(w => w._id).map(w => (
                                                     <SelectItem key={w._id} value={w._id}>{w.name}</SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -285,7 +286,7 @@ export default function AddTransactionPage() {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="none">None</SelectItem>
-                                                {farms.map(f => (
+                                                {farms.filter(f => f._id).map(f => (
                                                     <SelectItem key={f._id} value={f._id}>{f.name}</SelectItem>
                                                 ))}
                                             </SelectContent>
