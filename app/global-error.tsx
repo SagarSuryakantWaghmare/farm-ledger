@@ -9,6 +9,9 @@ export default function GlobalError({
 }) {
   return (
     <html>
+      <head>
+        <title>Error - FarmLedger</title>
+      </head>
       <body>
         <div className="flex flex-col items-center justify-center min-h-screen p-6 text-center">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-6">
